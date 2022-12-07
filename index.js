@@ -17,6 +17,16 @@ const middleware = (req, res, next) => {
     next()
 }
 
+const middlewareCheck = (req, res, next) => {
+    if (req.body.product_price === isNaN) {
+        next()
+    }
+    else{
+        console.log({"error": "product_price tidak boleh <=0"})
+    }
+    next()
+}
+
 conn.connect((err) => {
     if(err) throw err;
     console.log('Mysql Connected...');
@@ -40,7 +50,7 @@ app.get('/api/products/:id', (req, res) => {
     });
 });
 
-app.post('/api/products', (req, res) => {
+app.post('/api/products',middlewareCheck, (req, res) => {
     let data = {product_name: req.body.product_name, product_price: req.body.product_price};
     let sql = "INSERT INTO product SET ?";
     let query = conn.query(sql, data,(err, results) => {
